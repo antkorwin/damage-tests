@@ -1,11 +1,16 @@
 package com.antkorvin.damagetests.services;
 
+import com.antkorvin.damagetests.errorinfos.RocketServiceErrorInfo;
+import com.antkorvin.damagetests.exceptions.NotFoundException;
 import com.antkorvin.damagetests.models.Rocket;
 import com.antkorvin.damagetests.repositories.RocketRepository;
+import com.antkorvin.damagetests.utills.Guard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+import static com.antkorvin.damagetests.errorinfos.RocketServiceErrorInfo.ROCKET_NOT_FOUND;
 
 
 /**
@@ -34,10 +39,11 @@ public class RocketServiceImpl implements RocketService {
 
     @Override
     public Rocket get(UUID id) {
-        return rocketRepository.findOne(id);
+        return rocketRepository.findById(id)
+                               .orElseThrow(() -> new NotFoundException(ROCKET_NOT_FOUND));
     }
 
     private String generateCode() {
-        return UUID.randomUUID().toString().substring(0,5);
+        return UUID.randomUUID().toString().substring(0, 5);
     }
 }

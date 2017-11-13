@@ -28,7 +28,9 @@ import java.util.UUID;
 @Builder
 public class Rocket extends BaseEntity {
 
+    @Column(unique = true)
     private String name;
+
     private String launchCode;
 
     @Builder

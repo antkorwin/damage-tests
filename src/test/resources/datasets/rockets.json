@@ -1,0 +1,19 @@
+{
+  "ROCKET": [
+    {
+      "ID": "b738a903-4748-4d67-bab0-1554697b69cc",
+      "LAUNCH_CODE": "592",
+      "NAME": "Empty bomb"
+    },
+    {
+      "ID": "d0bf699a-122a-44f4-91f6-3a1c2837167e",
+      "LAUNCH_CODE": "210",
+      "NAME": "Atomic bomb"
+    },
+    {
+      "ID": "f26b93f8-a0ab-496c-8b24-3b446cb1c50c",
+      "LAUNCH_CODE": "936",
+      "NAME": "Nuclear"
+    }
+  ]
+}

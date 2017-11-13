@@ -1,7 +1,10 @@
 package com.antkorvin.damagetests.services;
 
+import com.antkorvin.damagetests.errorinfos.RocketServiceErrorInfo;
+import com.antkorvin.damagetests.exceptions.NotFoundException;
 import com.antkorvin.damagetests.models.Rocket;
 import com.antkorvin.damagetests.repositories.RocketRepository;
+import com.antkorvin.damagetests.utils.GuardCheck;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +12,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.annotation.Repeat;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -116,7 +119,7 @@ public class RocketServiceImplTest {
         // Arrange
         UUID id = UUID.randomUUID();
         Rocket rocket = mock(Rocket.class);
-        when(rocketRepository.findOne(eq(id))).thenReturn(rocket);
+        when(rocketRepository.findById(id)).thenReturn(Optional.of(rocket));
 
         // Act
         Rocket result = rocketService.get(id);
@@ -126,9 +129,23 @@ public class RocketServiceImplTest {
                   .isNotNull()
                   .isEqualTo(rocket);
 
-        verify(rocketRepository).findOne(eq(id));
+        verify(rocketRepository).findById(eq(id));
+    }
+
+    /**
+     * Test get request for the not existed entity, expected exception
+     */
+    @Test
+    public void testGetNotFound() {
+        // Arrange
+        UUID id = UUID.randomUUID();
+        when(rocketRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act & assert
+        GuardCheck.check(()-> rocketService.get(id),
+                         NotFoundException.class,
+                         RocketServiceErrorInfo.ROCKET_NOT_FOUND);
     }
 
 
-    //TODO: add except cases with Guard
 }
