@@ -1,13 +1,12 @@
 package com.antkorvin.damagetests.api;
 
+import com.antkorvin.damagetests.api.dto.RocketDTO;
+import com.antkorvin.damagetests.models.Rocket;
+import com.antkorvin.damagetests.utils.BaseSystemIT;
+import com.github.database.rider.core.api.dataset.DataSet;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
@@ -21,20 +20,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Created by Korovin Anatolii on 11.11.17.
- *
- * Rocket REST API system test.
- * (Testing: Database & MVC & service integration)
+ * <p>
+ * Rocket REST API system test. (Testing: Database & MVC & service integration)
  *
  * @author Korovin Anatolii
  * @version 1.0
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-public class RocketControllerSystemIT {
+public class RocketControllerSystemIT extends BaseSystemIT {
 
-    @Autowired
-    protected MockMvc mockMvc;
 
     /**
      * Test for create new rocket
@@ -55,15 +48,24 @@ public class RocketControllerSystemIT {
      * Check get existing rocket from DB
      */
     @Test
+    @DataSet(cleanBefore = true, value = "datasets/rockets.json")
     public void getTest() throws Exception {
         // Arrange
-        UUID id = UUID.randomUUID();
+        UUID id = UUID.fromString("f26b93f8-a0ab-496c-8b24-3b446cb1c50c");
         // Act
-        mockMvc.perform(get("/{url}/{id}", RocketController.URL, id))
-               .andDo(print())
-               .andExpect(status().isOk());
+        String content = mockMvc.perform(get("/{url}/{id}", RocketController.URL, id))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andReturn().getResponse().getContentAsString();
 
         // Asserts
-        //TODO: check this case!
+        RocketDTO rocket = mapper.readValue(content, RocketDTO.class);
+        Assertions.assertThat(rocket)
+                  .extracting(RocketDTO::getId,
+                              RocketDTO::getName,
+                              RocketDTO::getLaunchCode)
+                  .contains(id,
+                            "Nuclear",
+                            "936");
     }
 }

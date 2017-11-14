@@ -1,16 +1,10 @@
 package com.antkorvin.damagetests.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -22,7 +16,8 @@ import java.util.UUID;
  * @version 1.0
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,10 +28,24 @@ public class Rocket extends BaseEntity {
 
     private String launchCode;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "submarine_id")
+    private Submarine submarine;
+
     @Builder
     public Rocket(UUID id, String name, String launchCode){
         super(id);
         this.setName(name);
         this.setLaunchCode(launchCode);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Rocket{" +
+               "id="+getId() +", "+
+               "name='" + name + '\'' +
+               ", launchCode='" + launchCode + '\'' +
+               '}';
     }
 }
