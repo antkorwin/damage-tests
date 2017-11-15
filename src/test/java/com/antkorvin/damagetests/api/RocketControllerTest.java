@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Created by Korovin Anatolii on 11.11.17.
- *
+ * <p>
  * Unit-test RocketController
  *
  * @author Korovin Anatolii
@@ -60,7 +60,13 @@ public class RocketControllerTest {
     public void create() throws Exception {
         // Arrange
         String name = "jellybelly";
-        Rocket rocket = new Rocket(UUID.randomUUID(), name, "a1c2b");
+
+        Rocket rocket = Rocket.builder()
+                              .id(UUID.randomUUID())
+                              .name(name)
+                              .launchCode("a1c1b")
+                              .build();
+
         when(rocketService.create(eq(name))).thenReturn(rocket);
 
         // Act
@@ -93,7 +99,7 @@ public class RocketControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/{url}/create", RocketController.URL)
-                       .param("name", "123"))
+                                .param("name", "123"))
                .andExpect(status().isInternalServerError());
     }
 
@@ -102,13 +108,19 @@ public class RocketControllerTest {
     public void testGetRocket() throws Exception {
         // Arrange
         UUID id = UUID.randomUUID();
-        Rocket rocket = new Rocket(id, "rocky", "1234");
+
+        Rocket rocket = Rocket.builder()
+                              .id(UUID.randomUUID())
+                              .name("roxy")
+                              .launchCode("1234")
+                              .build();
+
         when(rocketService.get(id)).thenReturn(rocket);
 
         // Act
         String content = mockMvc.perform(get("/{url}/{id}", RocketController.URL, id))
-                                        .andExpect(status().isOk())
-                                        .andReturn().getResponse().getContentAsString();
+                                .andExpect(status().isOk())
+                                .andReturn().getResponse().getContentAsString();
 
         // Asserts
         RocketDTO result = mapper.readValue(content, RocketDTO.class);
@@ -121,7 +133,6 @@ public class RocketControllerTest {
                             rocket.getName(),
                             rocket.getLaunchCode());
     }
-
 
 
     private Rocket getRocketMock(String name, String code) {

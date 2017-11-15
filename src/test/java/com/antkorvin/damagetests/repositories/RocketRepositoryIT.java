@@ -37,7 +37,7 @@ public class RocketRepositoryIT extends BaseDataIT {
     private RocketRepository rocketRepository;
 
 
-    @Ignore("used this only for generation test data set")
+    @Ignore("used this only for generation data set")
     @Test
     @Commit
     @DataSet(cleanBefore = true)

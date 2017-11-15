@@ -2,6 +2,7 @@ package com.antkorvin.damagetests.api;
 
 import com.antkorvin.damagetests.api.dto.ErrorDTO;
 import com.antkorvin.damagetests.api.dto.RocketDTO;
+import com.antkorvin.damagetests.exceptions.NotFoundException;
 import com.antkorvin.damagetests.mappers.RocketMapperImpl;
 import com.antkorvin.damagetests.models.Rocket;
 import com.antkorvin.damagetests.services.RocketService;
@@ -28,10 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Created by Korovin Anatolii on 12.11.17.
- *
- * Tests for check MVC layer integration
- * - controller advice
- * - status codes
+ * <p>
+ * Tests for check MVC layer integration - controller advice - status codes
  *
  * @author Korovin Anatolii
  * @version 1.0
@@ -59,7 +58,11 @@ public class RocketControllerIT {
     public void create() throws Exception {
         // Arrange
         String name = "jelly";
-        Rocket rocket = new Rocket(UUID.randomUUID(), name, "1234");
+        Rocket rocket = Rocket.builder()
+                              .id(UUID.randomUUID())
+                              .name("1234")
+                              .build();
+
         when(rocketService.create(eq(name))).thenReturn(rocket);
 
         // Act
@@ -86,7 +89,13 @@ public class RocketControllerIT {
     public void testGet() throws Exception {
         // Arrange
         UUID id = UUID.randomUUID();
-        Rocket rocket = new Rocket(id, "rocky", "1234");
+
+        Rocket rocket = Rocket.builder()
+                              .id(id)
+                              .name("roxy")
+                              .launchCode("1234")
+                              .build();
+
         when(rocketService.get(eq(id))).thenReturn(rocket);
 
         // Act
@@ -97,13 +106,40 @@ public class RocketControllerIT {
 
         // Asserts
         RocketDTO result = mapper.readValue(content, RocketDTO.class);
-        // TODO: check this case
-        Assertions.assertThat(result).isNotNull();
+
+        Assertions.assertThat(result)
+                  .isNotNull()
+                  .extracting(RocketDTO::getId,
+                              RocketDTO::getName,
+                              RocketDTO::getLaunchCode)
+                  .contains(rocket.getId(),
+                            rocket.getName(),
+                            rocket.getLaunchCode());
+    }
+
+    @Test
+    public void testGetWithNotFoundException() throws Exception {
+        UUID id = UUID.randomUUID();
+        // Arrange
+        when(rocketService.get(any(UUID.class)))
+                .thenThrow(new NotFoundException("oops", 101010));
+
+        // Act
+        String content = mockMvc.perform(get("/{url}/{id}", RocketController.URL, id))
+                                .andDo(print())
+                                .andExpect(status().isNotFound())
+                                .andReturn().getResponse().getContentAsString();
+
+        // Asserts
+        ErrorDTO result = mapper.readValue(content, ErrorDTO.class);
+        Assertions.assertThat(result)
+                  .extracting(ErrorDTO::getMessage,
+                              ErrorDTO::getCode)
+                  .contains("oops", 101010);
     }
 
     /**
-     * Check handler exception while rocket create,
-     * and response InternalServerError code with ErrorDTO to client
+     * Check handler exception while rocket create, and response InternalServerError code with ErrorDTO to client
      */
     @Test
     public void testThrowExceptionWhileCreate() throws Exception {

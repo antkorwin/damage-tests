@@ -1,0 +1,51 @@
+{
+  "SUBMARINE": [
+    {
+      "ID": "d88451fb-a456-45c2-b0ee-a004d0ffa1e1",
+      "NAME": "USA",
+      "POWER":"9"
+    },
+    {
+      "ID": "d88451fb-a456-45c2-b0ee-a004d0ffa1e2",
+      "NAME": "UA",
+      "POWER":"10"
+    },
+    {
+      "ID": "f0421439-1a06-4cff-ac31-bab99edf10f6",
+      "NAME": "USSR",
+      "POWER":"100"
+    }
+  ],
+  "ROCKET": [
+    {
+      "ID": "54d7f19c-4490-4632-8c07-8f27269ef734",
+      "LAUNCH_CODE": "000",
+      "NAME": "Rocket_3",
+      "SUBMARINE_ID": "f0421439-1a06-4cff-ac31-bab99edf10f6"
+    },
+    {
+      "ID": "63333bd1-ae61-4905-b46f-17845239425e",
+      "LAUNCH_CODE": "000",
+      "NAME": "Rocket_2",
+      "SUBMARINE_ID": "f0421439-1a06-4cff-ac31-bab99edf10f6"
+    },
+    {
+      "ID": "7537830d-757c-470d-8c2f-a31f5c4c12b5",
+      "LAUNCH_CODE": "000",
+      "NAME": "Rocket_1",
+      "SUBMARINE_ID": "f0421439-1a06-4cff-ac31-bab99edf10f6"
+    },
+    {
+      "ID": "a811e763-c5eb-4a32-9f83-f845f3622f4d",
+      "LAUNCH_CODE": "000",
+      "NAME": "Rocket_4",
+      "SUBMARINE_ID": "d88451fb-a456-45c2-b0ee-a004d0ffa1e1"
+    },
+    {
+      "ID": "fd2dc7a4-d5a3-4fd0-9df1-017e14afdd36",
+      "LAUNCH_CODE": "000",
+      "NAME": "Rocket_5",
+      "SUBMARINE_ID": "d88451fb-a456-45c2-b0ee-a004d0ffa1e1"
+    }
+  ]
+}

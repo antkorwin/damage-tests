@@ -33,10 +33,11 @@ public class Rocket extends BaseEntity {
     private Submarine submarine;
 
     @Builder
-    public Rocket(UUID id, String name, String launchCode){
+    public Rocket(UUID id, String name, String launchCode, Submarine submarine){
         super(id);
         this.setName(name);
         this.setLaunchCode(launchCode);
+        this.setSubmarine(submarine);
     }
 
 
