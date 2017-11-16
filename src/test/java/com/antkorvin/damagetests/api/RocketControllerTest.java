@@ -9,7 +9,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
@@ -21,7 +20,6 @@ import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,6 +44,15 @@ public class RocketControllerTest {
     private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
 
+    private UUID id = UUID.randomUUID();
+    private String name = "jelly-belly";
+    private String code = "q1w2e3";
+    private Rocket rocket = Rocket.builder()
+                                  .id(id)
+                                  .name(name)
+                                  .launchCode(code)
+                                  .build();
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -59,14 +66,6 @@ public class RocketControllerTest {
     @Test
     public void create() throws Exception {
         // Arrange
-        String name = "jellybelly";
-
-        Rocket rocket = Rocket.builder()
-                              .id(UUID.randomUUID())
-                              .name(name)
-                              .launchCode("a1c1b")
-                              .build();
-
         when(rocketService.create(eq(name))).thenReturn(rocket);
 
         // Act
@@ -78,17 +77,11 @@ public class RocketControllerTest {
 
         // Asserts
         RocketDTO result = mapper.readValue(resultContent, RocketDTO.class);
-
-        Assertions.assertThat(result)
-                  .extracting(RocketDTO::getId,
-                              RocketDTO::getName,
-                              RocketDTO::getLaunchCode)
-                  .contains(rocket.getId(),
-                            rocket.getName(),
-                            rocket.getLaunchCode());
+        assertRocketDTO(result, rocket);
 
         verify(rocketService).create(name);
     }
+
 
     @Ignore("пример того что нельзя протестировать в юнит тесте не поднимая контекст")
     @Test
@@ -107,15 +100,7 @@ public class RocketControllerTest {
     @Test
     public void testGetRocket() throws Exception {
         // Arrange
-        UUID id = UUID.randomUUID();
-
-        Rocket rocket = Rocket.builder()
-                              .id(UUID.randomUUID())
-                              .name("roxy")
-                              .launchCode("1234")
-                              .build();
-
-        when(rocketService.get(id)).thenReturn(rocket);
+        when(rocketService.get(eq(id))).thenReturn(rocket);
 
         // Act
         String content = mockMvc.perform(get("/{url}/{id}", RocketController.URL, id))
@@ -124,22 +109,19 @@ public class RocketControllerTest {
 
         // Asserts
         RocketDTO result = mapper.readValue(content, RocketDTO.class);
+        assertRocketDTO(result, rocket);
 
-        Assertions.assertThat(result)
-                  .extracting(RocketDTO::getId,
-                              RocketDTO::getName,
-                              RocketDTO::getLaunchCode)
-                  .contains(rocket.getId(),
-                            rocket.getName(),
-                            rocket.getLaunchCode());
+        verify(rocketService).get(eq(id));
     }
 
 
-    private Rocket getRocketMock(String name, String code) {
-        Rocket rocketMock = mock(Rocket.class);
-        when(rocketMock.getId()).thenReturn(UUID.randomUUID());
-        when(rocketMock.getName()).thenReturn(name);
-        when(rocketMock.getLaunchCode()).thenReturn(code);
-        return rocketMock;
+    private void assertRocketDTO(RocketDTO actual, Rocket expected) {
+        Assertions.assertThat(actual)
+                  .extracting(RocketDTO::getId,
+                              RocketDTO::getName,
+                              RocketDTO::getLaunchCode)
+                  .contains(expected.getId(),
+                            expected.getName(),
+                            expected.getLaunchCode());
     }
 }

@@ -82,6 +82,14 @@
             <scope>test</scope>
 		</dependency>
 
+		<!-- Param. tests -->
+		<dependency>
+			<groupId>pl.pragmatists</groupId>
+			<artifactId>JUnitParams</artifactId>
+			<version>1.0.5</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Apache -->
 		<dependency>
 			<groupId>commons-lang</groupId>

@@ -28,4 +28,11 @@ public interface RocketService {
      * @return found rocket
      */
     Rocket get(UUID id);
+
+    /**
+     * Fire rocket, if its not dummy
+     * @param id rocket id
+     * @return true if success
+     */
+    void fire(UUID id);
 }

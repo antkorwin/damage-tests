@@ -1,13 +1,19 @@
 package com.antkorvin.damagetests.services;
 
 import com.antkorvin.damagetests.errorinfos.RocketServiceErrorInfo;
+import com.antkorvin.damagetests.exceptions.ConditionValidationException;
 import com.antkorvin.damagetests.exceptions.NotFoundException;
 import com.antkorvin.damagetests.models.Rocket;
+import com.antkorvin.damagetests.models.RocketStatus;
 import com.antkorvin.damagetests.repositories.RocketRepository;
 import com.antkorvin.damagetests.utils.GuardCheck;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import junitparams.naming.TestCaseName;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,6 +34,7 @@ import static org.mockito.Mockito.*;
  * @author Korovin Anatolii
  * @version 1.0
  */
+@RunWith(JUnitParamsRunner.class)
 public class RocketServiceImplTest {
 
     @InjectMocks
@@ -142,10 +149,49 @@ public class RocketServiceImplTest {
         when(rocketRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act & assert
-        GuardCheck.check(()-> rocketService.get(id),
+        GuardCheck.check(() -> rocketService.get(id),
                          NotFoundException.class,
                          RocketServiceErrorInfo.ROCKET_NOT_FOUND);
     }
 
 
+    @Test
+    @Parameters({"REACTIVE", "ULTRASOUND"})
+    @TestCaseName("[{index}] {method}: Rocket.status={params}")
+    public void fireTest(RocketStatus status) {
+        // Arrange
+        UUID id = UUID.randomUUID();
+        Rocket rocket = Rocket.builder()
+                              .status(status)
+                              .build();
+
+        when(rocketRepository.findById(eq(id))).thenReturn(Optional.of(rocket));
+
+        ArgumentCaptor<Rocket> captor = ArgumentCaptor.forClass(Rocket.class);
+
+        // Act
+        rocketService.fire(id);
+
+        // Asserts
+        verify(rocketRepository).save(captor.capture());
+        Assertions.assertThat(captor.getValue())
+                  .extracting(Rocket::getStatus)
+                  .contains(RocketStatus.USED);
+    }
+
+
+    @Test
+    public void testFireOnAlreadyUsedRocket() {
+        UUID id = UUID.randomUUID();
+        Rocket rocket = Rocket.builder()
+                              .status(RocketStatus.USED)
+                              .build();
+
+        when(rocketRepository.findById(eq(id))).thenReturn(Optional.of(rocket));
+
+        // Act
+        GuardCheck.check(() -> rocketService.fire(id),
+                         ConditionValidationException.class,
+                         RocketServiceErrorInfo.IMPOSSIBLE_FIRE_ROCKET_ALREADY_USED);
+    }
 }

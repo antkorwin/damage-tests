@@ -7,7 +7,8 @@ package com.antkorvin.damagetests.errorinfos;
  * @version 1.0
  */
 public enum RocketServiceErrorInfo implements ErrorInfo {
-    ROCKET_NOT_FOUND("Not Found Rocket entity by id");
+    ROCKET_NOT_FOUND("Not Found Rocket entity by id"),
+    IMPOSSIBLE_FIRE_ROCKET_ALREADY_USED("Нельзя запустить ракету, она уже была использована.");
 
     private final int BASE = 1000;
     private final String message;

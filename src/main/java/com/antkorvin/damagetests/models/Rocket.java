@@ -32,12 +32,16 @@ public class Rocket extends BaseEntity {
     @JoinColumn(name = "submarine_id")
     private Submarine submarine;
 
+    @Enumerated(EnumType.STRING)
+    private RocketStatus status;
+
     @Builder
-    public Rocket(UUID id, String name, String launchCode, Submarine submarine){
+    public Rocket(UUID id, String name, String launchCode, Submarine submarine, RocketStatus status){
         super(id);
         this.setName(name);
         this.setLaunchCode(launchCode);
         this.setSubmarine(submarine);
+        this.setStatus(status);
     }
 
 
