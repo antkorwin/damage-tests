@@ -42,16 +42,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
+		<!-- DB -->
+		<!-- H2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- PostgreSQL JDBC driver -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1211</version>
 		</dependency>
 
 		<!-- Препроцессоры -->
@@ -67,13 +75,13 @@
 		</dependency>
 
 		<!-- TESTS -->
+		<!-- AssertJ -->
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
 			<version>${assertj.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 		<!-- DB Rider -->
 		<dependency>
 			<groupId>com.github.database-rider</groupId>
@@ -81,13 +89,31 @@
 			<version>1.2.5</version>
             <scope>test</scope>
 		</dependency>
-
 		<!-- Param. tests -->
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
 			<version>1.0.5</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- TestContainers PG -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<!-- TestContainers Web -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>selenium</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<!-- WebDriver dependency as 'provided' scope -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-remote-driver</artifactId>
+			<version>2.52.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Apache -->
