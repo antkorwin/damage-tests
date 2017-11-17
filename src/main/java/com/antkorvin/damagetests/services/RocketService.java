@@ -32,10 +32,9 @@ public interface RocketService {
     Rocket get(UUID id);
 
     /**
-     * Fire rocket, if its not dummy
+     * Fire rocket
      *
      * @param id rocket id
-     * @return true if success
      */
     void fire(UUID id);
 
@@ -48,7 +47,8 @@ public interface RocketService {
     List<Rocket> getAllByStatus(RocketStatus status);
 
     /**
-     * Recharge rocket if it DUMMY
+     * Recharge rocket if its USED
+     *
      * @param id roket id
      * @return updated rocket
      */
