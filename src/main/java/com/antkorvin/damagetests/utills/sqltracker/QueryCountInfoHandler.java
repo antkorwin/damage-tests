@@ -1,14 +1,17 @@
 package com.antkorvin.damagetests.utills.sqltracker;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by Igor Dmitriev / Mikalai Alimenkou on 12/6/15
  */
+@Slf4j
 public class QueryCountInfoHandler implements QueryHandler {
     @Override
     public void handleSql(String sql) {
         QueryType queryType = getQueryType(sql);
         QueryCountInfo queryCountInfo = QueryCountInfoHolder.getQueryInfo();
-        System.out.println("!sql handle: "+queryType+"!");
+        log.debug("assertSql.handle({})", queryType);
         switch (queryType) {
             case SELECT:
                 queryCountInfo.incrementSelectCount();

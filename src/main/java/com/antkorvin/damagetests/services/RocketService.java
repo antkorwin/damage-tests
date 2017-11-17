@@ -2,7 +2,9 @@ package com.antkorvin.damagetests.services;
 
 
 import com.antkorvin.damagetests.models.Rocket;
+import com.antkorvin.damagetests.models.RocketStatus;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,8 +33,24 @@ public interface RocketService {
 
     /**
      * Fire rocket, if its not dummy
+     *
      * @param id rocket id
      * @return true if success
      */
     void fire(UUID id);
+
+    /**
+     * Get all rocket with selected status
+     *
+     * @param status RocketStatus
+     * @return list of relevant Rocket
+     */
+    List<Rocket> getAllByStatus(RocketStatus status);
+
+    /**
+     * Recharge rocket if it DUMMY
+     * @param id roket id
+     * @return updated rocket
+     */
+    Rocket charge(UUID id);
 }

@@ -1,6 +1,7 @@
 package com.antkorvin.damagetests.repositories;
 
 import com.antkorvin.damagetests.models.Rocket;
+import com.antkorvin.damagetests.models.RocketStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,7 @@ public interface RocketRepository extends JpaRepository<Rocket, UUID>{
 
     @Query("select r from Rocket r where r.name like %?1")
     List<Rocket> findByNameLike(String name);
+
+
+    List<Rocket> findAllByStatus(RocketStatus status);
 }

@@ -1,14 +1,17 @@
 package com.antkorvin.damagetests.utills.sqltracker;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import static com.antkorvin.damagetests.utills.sqltracker.QueryCountInfoHolder.getQueryInfo;
 
 /**
  * Created by Igor Dmitriev / Mikalai Alimenkou on 12/6/15
  */
+@Slf4j
 public class AssertSqlCount {
     public static void reset() {
-        System.out.println("!sql reset!");
+        log.debug("assertSql.reset()");
         getQueryInfo().clear();
     }
 
@@ -34,7 +37,7 @@ public class AssertSqlCount {
     }
 
     private static void assertSqlCount(String statement, int expectedCount, int actualCount) {
-        System.out.println("!sql assert!");
+        log.debug("assertSql.assert({}, {}, {})", statement, expectedCount, actualCount);
         if (expectedCount != actualCount) {
             throw new SqlCountMismatchException(statement, expectedCount, actualCount);
         }

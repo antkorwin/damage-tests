@@ -20,7 +20,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Rocket extends BaseEntity {
 
     @Column(unique = true)

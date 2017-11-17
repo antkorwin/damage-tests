@@ -1,5 +1,6 @@
 package com.antkorvin.damagetests.services;
 
+
 import com.antkorvin.damagetests.errorinfos.RocketServiceErrorInfo;
 import com.antkorvin.damagetests.exceptions.NotFoundException;
 import com.antkorvin.damagetests.models.Rocket;
@@ -8,7 +9,10 @@ import com.antkorvin.damagetests.repositories.RocketRepository;
 import com.antkorvin.damagetests.utills.Guard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.antkorvin.damagetests.errorinfos.RocketServiceErrorInfo.IMPOSSIBLE_FIRE_ROCKET_ALREADY_USED;
@@ -33,6 +37,7 @@ public class RocketServiceImpl implements RocketService {
     }
 
     @Override
+    @Transactional
     public Rocket create(String name) {
         return rocketRepository.save(Rocket.builder()
                                            .name(name)
@@ -41,12 +46,15 @@ public class RocketServiceImpl implements RocketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Rocket get(UUID id) {
         return rocketRepository.findById(id)
                                .orElseThrow(() -> new NotFoundException(ROCKET_NOT_FOUND));
     }
 
+
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void fire(UUID id) {
 
         Rocket rocket = get(id);
@@ -56,6 +64,23 @@ public class RocketServiceImpl implements RocketService {
 
         rocket.setStatus(USED);
         rocketRepository.save(rocket);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Rocket> getAllByStatus(RocketStatus status) {
+
+        return rocketRepository.findAllByStatus(status);
+    }
+
+    @Override
+    public Rocket charge(UUID id) {
+        Rocket rocket = get(id);
+        Guard.checkConditionValid(rocket.getStatus() == USED,
+                                  RocketServiceErrorInfo.WRONG_ROCKET_STATUS);
+
+        rocket.setStatus(RocketStatus.REACTIVE);
+        return rocketRepository.save(rocket);
     }
 
     private String generateCode() {

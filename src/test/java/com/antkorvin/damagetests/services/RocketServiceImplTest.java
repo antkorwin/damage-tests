@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -193,5 +195,57 @@ public class RocketServiceImplTest {
         GuardCheck.check(() -> rocketService.fire(id),
                          ConditionValidationException.class,
                          RocketServiceErrorInfo.IMPOSSIBLE_FIRE_ROCKET_ALREADY_USED);
+    }
+
+
+    @Test
+    public void testGetAllByStatus() {
+        // Arrange
+        Rocket rocket1 = mock(Rocket.class);
+        Rocket rocket2 = mock(Rocket.class);
+        when(rocketRepository.findAllByStatus(RocketStatus.USED))
+                .thenReturn(Arrays.asList(rocket1, rocket2));
+
+        // Act
+        List<Rocket> rockets = rocketService.getAllByStatus(RocketStatus.USED);
+
+        // Asserts
+        verify(rocketRepository).findAllByStatus(RocketStatus.USED);
+
+        Assertions.assertThat(rockets)
+                  .isNotNull()
+                  .hasSize(2)
+                  .contains(rocket1, rocket2);
+    }
+
+
+    @Test
+    public void testCharge() {
+        // Arrange
+        UUID id = UUID.randomUUID();
+
+        Rocket rocket = Rocket.builder()
+                              .status(RocketStatus.USED)
+                              .name("emptiness")
+                              .launchCode("1234")
+                              .id(id)
+                              .build();
+
+        when(rocketRepository.findById(id)).thenReturn(Optional.of(rocket));
+        ArgumentCaptor<Rocket> captor = ArgumentCaptor.forClass(Rocket.class);
+
+        when(rocketRepository.save(any(Rocket.class))).thenReturn(rocket);
+
+        // Act
+        Rocket result = rocketService.charge(id);
+
+        // Asserts
+        Assertions.assertThat(result).isEqualTo(rocket);
+
+        verify(rocketRepository).save(captor.capture());
+        Assertions.assertThat(captor.getValue())
+                  .isEqualTo(rocket)
+                  .extracting(Rocket::getStatus)
+                  .doesNotContain(RocketStatus.USED);
     }
 }
