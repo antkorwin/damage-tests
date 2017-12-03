@@ -83,6 +83,29 @@ public class RocketServiceImpl implements RocketService {
         return rocketRepository.save(rocket);
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public void readWithReadOnlyTransaction(UUID firstId, UUID secondId) {
+        rocketRepository.findById(firstId);
+        rocketRepository.findById(secondId);
+    }
+
+
+
+    @Override
+    public void readWithoutTx(UUID firstId, UUID secondId) {
+        rocketRepository.findById(firstId);
+        rocketRepository.findById(secondId);
+    }
+
+    @Transactional
+    @Override
+    public void readWithoutReadOnly(UUID firstId, UUID secondId){
+        rocketRepository.findById(firstId);
+        rocketRepository.findById(secondId);
+    }
+
     private String generateCode() {
         return UUID.randomUUID().toString().substring(0, 5);
     }

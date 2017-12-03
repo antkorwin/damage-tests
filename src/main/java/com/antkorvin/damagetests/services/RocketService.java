@@ -53,4 +53,19 @@ public interface RocketService {
      * @return updated rocket
      */
     Rocket charge(UUID id);
+
+
+    /**
+     * чтение без использования транзакций,
+     * нужен для сравнения с методом использующим readonly транзакции
+     */
+    void readWithoutTx(UUID firstId, UUID secondId);
+
+
+    /**
+     * чтение с использованием readonly транзакций
+     */
+    void readWithReadOnlyTransaction(UUID firstId, UUID secondId);
+
+    void readWithoutReadOnly(UUID firstId, UUID secondId);
 }
